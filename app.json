@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "purdue-contact-tracing",
+    "name": "PurdueCT",
     "slug": "purdue-contact-tracing",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,10 +19,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier":"com.matthewwen.purduect",
+      "buildNumber":"1.0.0"
     },
-    "web": {
-      "favicon": "./assets/images/favicon.png"
+    "android": {
+      "package": "com.matthewwen.purduect",
+      "versionCode": 1
     }
   }
 }
