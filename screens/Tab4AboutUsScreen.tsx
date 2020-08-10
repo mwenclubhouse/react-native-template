@@ -1,15 +1,17 @@
 import * as React from 'react';
-import {ScrollView, StyleSheet} from 'react-native';
-import { Checkbox } from 'react-native-material-ui';
+import {Appearance, Button, ScrollView, StyleSheet, useColorScheme} from 'react-native';
+import {Checkbox} from 'react-native-material-ui';
 
 import {Text, View} from '../components/Themed';
 import * as Calendar from "expo-calendar";
+import {useEffect} from "react";
+const login = [{title: "Facebook"}, {title: "Google"}, {title: "Email"}];
 
 export default class Tab2LocationTrackerScreen extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
-        this.state = {calendar: []};
+        this.state = {calendar: [], theme: "light"};
     }
 
     componentDidMount() {
@@ -24,16 +26,27 @@ export default class Tab2LocationTrackerScreen extends React.Component<any, any>
                 this.setState({calendar: calendar});
             }
         })();
+        const theme = Appearance.getColorScheme();
+        this.setState({theme: theme});
     }
 
     render() {
+        const scheme = this.state.theme == "light"? "#00000077": "#FFFFFF77";
         return (
             <View style={styles.container}>
                 <ScrollView style={{flex: 1}}>
-                    <Text style={styles.title}>Calendars</Text>
-                    {this.state.calendar.map((row: any) =>
-                        this.CalendarList(row)
-                    )}
+                    <View style={{backgroundColor: scheme, ...styles.section}}>
+                        <Text style={{ marginLeft: 5, ...styles.title}}>Tracking Account</Text>
+                        {login.map((item: any) =>
+                            this.LoginList(item)
+                        )}
+                    </View>
+                    <View style={{backgroundColor: scheme, ...styles.section}}>
+                        <Text style={{ marginLeft: 5, ...styles.title}}>Calendars</Text>
+                        {this.state.calendar.map((row: any) =>
+                            this.CalendarList(row)
+                        )}
+                    </View>
                 </ScrollView>
             </View>
         );
@@ -41,12 +54,38 @@ export default class Tab2LocationTrackerScreen extends React.Component<any, any>
 
     CalendarList(calendar: any) {
         return (
-            <View style={{backgroundColor: calendar["color"], ...styles.calendarView}} >
-                <Text style={{flex: 10}}>{calendar["title"]}</Text>
-                <Checkbox style={{container: {marginTop: -15, marginBottom: -15, marginRight: 5, padding: 0}}} label={""}  onCheck={(value) => {
-                    calendar["checked"] = value;
-                    this.setState({});
-                }} checked={calendar["checked"]} value={calendar}/>
+            <View style={{backgroundColor: calendar["color"], ...styles.calendarView}}>
+                <View style={{backgroundColor: "#0000", flex: 1}}>
+                    <Text style={{
+                        marginLeft: 10,
+                        marginTop: "auto",
+                        marginBottom: "auto",
+                        fontSize: 15,
+                        fontWeight: "bold"
+                    }}>{calendar["title"]}</Text>
+                </View>
+                <View style={{backgroundColor: "#0000"}}>
+                    <Checkbox label={""} onCheck={(value) => {
+                        calendar["checked"] = value;
+                        this.setState({});
+                    }} checked={calendar["checked"]} value={calendar}/>
+                </View>
+            </View>
+        );
+    }
+
+    LoginList(login: any) {
+        return (
+            <View style={{...styles.calendarView}}>
+                <View style={{backgroundColor: "#0000", minHeight: 50}}>
+                    <Text style={{
+                        marginLeft: 10,
+                        marginTop: "auto",
+                        marginBottom: "auto",
+                        fontSize: 15,
+                        fontWeight: "bold"
+                    }}>{login["title"]}</Text>
+                </View>
             </View>
         );
     }
@@ -55,6 +94,12 @@ export default class Tab2LocationTrackerScreen extends React.Component<any, any>
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    section: {
+        margin: 2,
+        padding: 5,
+        borderRadius: 10,
+        marginTop: 10
     },
     title: {
         fontSize: 20,
@@ -66,7 +111,6 @@ const styles = StyleSheet.create({
         width: '80%',
     },
     calendarView: {
-        padding: 20,
         margin: 5,
         borderRadius: 10,
         display: "flex",
