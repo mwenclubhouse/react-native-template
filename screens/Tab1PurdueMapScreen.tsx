@@ -1,15 +1,14 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
+import MapView from 'react-native-maps';
 
-export default function TabOneScreen() {
+export default function PurdueMapScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <Text style={styles.title}>Purdue University</Text>
+      <MapView style={styles.mapStyle}/>
     </View>
   );
 }
@@ -29,4 +28,8 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
+  mapStyle: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  }
 });
