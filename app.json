@@ -3,7 +3,7 @@
     "name": "PurdueCT",
     "slug": "purdue-contact-tracing",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
+    "sdkVersion": "38.0.0",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,7 +16,7 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 20
+      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
@@ -28,8 +28,8 @@
     },
     "android": {
       "package": "com.matthewwen.purduect",
-      "versionCode": 1,
-      "googleServicesFile": "./google-services.json"
+      "versionCode": 2,
+      "permissions": ["ACCESS_FINE_LOCATION", "READ_CALENDAR", "WRITE_CALENDAR"]
     }
   }
 }

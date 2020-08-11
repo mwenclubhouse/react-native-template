@@ -2,13 +2,13 @@ import * as React from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
 
 import { Text, View } from '../components/Themed';
-import MapView from 'react-native-maps';
+// import MapView from 'react-native-maps';
 
 export default function PurdueMapScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Purdue University</Text>
-      <MapView style={styles.mapStyle}/>
+      {/*<MapView style={styles.mapStyle}/>*/}
     </View>
   );
 }

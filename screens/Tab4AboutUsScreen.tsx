@@ -1,11 +1,17 @@
 import * as React from 'react';
-import {Appearance, Button, ScrollView, StyleSheet, useColorScheme} from 'react-native';
+import {Appearance, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import {Checkbox} from 'react-native-material-ui';
 
 import {Text, View} from '../components/Themed';
+import * as Permissions from "expo-permissions";
 import * as Calendar from "expo-calendar";
-import {useEffect} from "react";
-const login = [{title: "Facebook"}, {title: "Google"}, {title: "Email"}];
+import firebaseInterface from "../src/firebaseInterface";
+const login = [{title: "Facebook", func: firebaseInterface.loginWithFacebook}, {title: "Google", func: null}, {title: "Email", func: null}];
+
+interface MyCalendar{
+    title: string,
+    checked: boolean
+}
 
 export default class Tab2LocationTrackerScreen extends React.Component<any, any> {
 
@@ -19,9 +25,9 @@ export default class Tab2LocationTrackerScreen extends React.Component<any, any>
             const {status} = await Calendar.requestCalendarPermissionsAsync();
             if (status === 'granted') {
                 const calendarsFromCalendar = await Calendar.getCalendarsAsync();
-                let calendar = Object.assign([], calendarsFromCalendar);
-                for (let i in calendar) {
-                    calendar["checked"] = false;
+                let calendar: MyCalendar[] = Object.assign([], calendarsFromCalendar);
+                for (let i = 0; i < calendar.length; i++) {
+                    calendar[i].checked = true;
                 }
                 this.setState({calendar: calendar});
             }
@@ -30,8 +36,57 @@ export default class Tab2LocationTrackerScreen extends React.Component<any, any>
         this.setState({theme: theme});
     }
 
+    CalendarList(calendar: any) {
+        return (
+            <TouchableOpacity
+            onPress={() => {
+                calendar["checked"] = !calendar["checked"];
+                this.setState({});
+            }}>
+                <View style={{backgroundColor: calendar["color"], ...styles.calendarView}}>
+                    <View style={{backgroundColor: "#0000", flex: 1}}>
+                        <Text style={{
+                            marginLeft: 10,
+                            marginTop: "auto",
+                            marginBottom: "auto",
+                            fontSize: 15,
+                            fontWeight: "bold"
+                        }}>{calendar["title"]}</Text>
+                    </View>
+                    <View style={{backgroundColor: "#0000"}}>
+                        <Checkbox label={""} checked={calendar["checked"]} value={calendar} disabled={true} 
+                         onCheck={() => {}}/>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
+    LoginList(login: any) {
+        return (
+            <TouchableOpacity
+                onPress={ async () => {
+                    if (login.func != null) {
+                        await login.func();
+                    }
+                }}>
+                <View style={{...styles.calendarView}}>
+                    <View style={{backgroundColor: "#0000", minHeight: 50}}>
+                        <Text style={{
+                            marginLeft: 10,
+                            marginTop: "auto",
+                            marginBottom: "auto",
+                            fontSize: 15,
+                            fontWeight: "bold"
+                        }}>{login["title"]}</Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
     render() {
-        const scheme = this.state.theme == "light"? "#00000077": "#FFFFFF77";
+        const scheme = this.state.theme == "light"? "#99999933": "#FFFFFF77";
         return (
             <View style={styles.container}>
                 <ScrollView style={{flex: 1}}>
@@ -46,46 +101,11 @@ export default class Tab2LocationTrackerScreen extends React.Component<any, any>
                         {this.state.calendar.map((row: any) =>
                             this.CalendarList(row)
                         )}
+                        {this.state.calendar.length == 0 &&
+                            <Text style={{marginLeft: 5}}>No Calendars Found</Text>
+                        }
                     </View>
                 </ScrollView>
-            </View>
-        );
-    }
-
-    CalendarList(calendar: any) {
-        return (
-            <View style={{backgroundColor: calendar["color"], ...styles.calendarView}}>
-                <View style={{backgroundColor: "#0000", flex: 1}}>
-                    <Text style={{
-                        marginLeft: 10,
-                        marginTop: "auto",
-                        marginBottom: "auto",
-                        fontSize: 15,
-                        fontWeight: "bold"
-                    }}>{calendar["title"]}</Text>
-                </View>
-                <View style={{backgroundColor: "#0000"}}>
-                    <Checkbox label={""} onCheck={(value) => {
-                        calendar["checked"] = value;
-                        this.setState({});
-                    }} checked={calendar["checked"]} value={calendar}/>
-                </View>
-            </View>
-        );
-    }
-
-    LoginList(login: any) {
-        return (
-            <View style={{...styles.calendarView}}>
-                <View style={{backgroundColor: "#0000", minHeight: 50}}>
-                    <Text style={{
-                        marginLeft: 10,
-                        marginTop: "auto",
-                        marginBottom: "auto",
-                        fontSize: 15,
-                        fontWeight: "bold"
-                    }}>{login["title"]}</Text>
-                </View>
             </View>
         );
     }
