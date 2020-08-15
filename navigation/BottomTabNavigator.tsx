@@ -1,25 +1,25 @@
 import {Ionicons} from '@expo/vector-icons';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import * as React from 'react';
 
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
 import PurdueMapScreen from '../screens/Tab1PurdueMapScreen';
 import Tab2LocationTrackerScreen from '../screens/Tab2LocationTrackerScreen';
 import {BottomTabParamList, TabFourParamList, TabOneParamList, TabThreeParamList, TabTwoParamList} from '../types';
 import Tab3NotificationScreen from "../screens/Tab3NotificationScreen";
 import Tab4AboutUsScreen from "../screens/Tab4AboutUsScreen";
-
-const BottomTab = createBottomTabNavigator<BottomTabParamList>();
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import {getPaperTheme} from "../components/Themed";
+const BottomTab = createMaterialBottomTabNavigator<BottomTabParamList>();
 
 export default function BottomTabNavigator() {
-    const colorScheme = useColorScheme();
-
+    const theme = getPaperTheme();
     return (
         <BottomTab.Navigator
             initialRouteName="TabOne"
-            tabBarOptions={{activeTintColor: Colors[colorScheme].tint}}>
+            shifting={false}
+            barStyle={{backgroundColor: theme.colors.primary}}
+            keyboardHidesNavigationBar={true}
+            sceneAnimationEnabled={false}>
             <BottomTab.Screen
                 name="TabOne"
                 component={TabOneNavigator}
@@ -68,7 +68,6 @@ function TabOneNavigator() {
             <TabOneStack.Screen
                 name="TabOneScreen"
                 component={PurdueMapScreen}
-                options={{headerTitle: 'Purdue University'}}
             />
         </TabOneStack.Navigator>
     );
@@ -82,7 +81,6 @@ function TabTwoNavigator() {
             <TabTwoStack.Screen
                 name="TabTwoScreen"
                 component={Tab2LocationTrackerScreen}
-                options={{headerTitle: 'Activity'}}
             />
         </TabTwoStack.Navigator>
     );
@@ -96,7 +94,6 @@ function TabThreeNavigator() {
             <TabThreeStack.Screen
                 name="TabThreeScreen"
                 component={Tab3NotificationScreen}
-                options={{headerTitle: 'Notifications'}}
             />
         </TabTwoStack.Navigator>
     );
@@ -110,7 +107,6 @@ function TabFourNavigator() {
             <TabFourStack.Screen
                 name="TabFourScreen"
                 component={Tab4AboutUsScreen}
-                options={{headerTitle: 'Profile'}}
             />
         </TabTwoStack.Navigator>
     );

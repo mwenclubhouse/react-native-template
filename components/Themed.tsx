@@ -18,6 +18,23 @@ export function useThemeColor(
   }
 }
 
+import {DefaultTheme, DarkTheme as PaperDarkTheme} from "react-native-paper";
+
+export function getPaperTheme(theme?: string) {
+  if (theme == undefined) {
+    theme = useColorScheme();
+  }
+  if (theme === "light") {
+    let defaultTheme = Object.assign({}, DefaultTheme);
+    defaultTheme.colors.primary = "#CEB888";
+    return defaultTheme;
+  }
+  let darkTheme = Object.assign({}, PaperDarkTheme);
+  darkTheme.colors.primary = "#CEB888";
+  return darkTheme;
+
+}
+
 type ThemeProps = {
   lightColor?: string;
   darkColor?: string;

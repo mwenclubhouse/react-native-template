@@ -1,6 +1,6 @@
 import React from 'react';
 import { expect } from 'chai';
-import firebaseInterface from "../firebaseInterface";
+import FirebaseInterface from "../FirebaseInterface";
 
 
 describe("Firebase Database", () => {
@@ -8,9 +8,9 @@ describe("Firebase Database", () => {
         expect("Hello There").equal("Hello There");
     });
     it("Connect to Database", () => {
-        let database = firebaseInterface.getDatabase();
+        let database = FirebaseInterface.getDatabase();
     })
     it("Login with Facebook", async () => {
-        await firebaseInterface.loginWithFacebook();
+        await FirebaseInterface.loginWithFacebook();
     })
 });

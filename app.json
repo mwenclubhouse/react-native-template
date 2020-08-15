@@ -4,8 +4,11 @@
     "slug": "purdue-contact-tracing",
     "privacy": "public",
     "sdkVersion": "38.0.0",
-    "platforms": ["ios", "android", "web"],
-    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -23,13 +26,24 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier":"com.matthewwen.purduect",
-      "buildNumber":"1.0.0"
+      "bundleIdentifier": "com.matthewwen.purduect",
+      "buildNumber": "1.0.2"
     },
     "android": {
       "package": "com.matthewwen.purduect",
       "versionCode": 2,
-      "permissions": ["ACCESS_FINE_LOCATION", "READ_CALENDAR", "WRITE_CALENDAR"]
-    }
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "READ_CALENDAR",
+        "WRITE_CALENDAR"
+      ],
+      "config": {
+        "googleSignIn": {
+          "certificateHash": "18:4A:C1:15:1E:4B:0B:16:E7:B1:7C:F1:D1:BF:F0:21:17:9B:B9:AC"
+        }
+      }
+    },
+    "description": ""
   }
 }
