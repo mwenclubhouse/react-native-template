@@ -74,9 +74,10 @@ export default class Tab4AboutUsScreen extends React.Component<any, any> {
 
         try {
             // Load the Calendar
-            const {status} = await Calendar.requestCalendarPermissionsAsync();
+            const calendarRequest = await Calendar.requestCalendarPermissionsAsync();
+            const reminderRequest = Platform.OS == "ios" ? await Calendar.requestRemindersPermissionsAsync(): {status: "granted"}
             let calendar: MyCalendar[] = [];
-            if (status === 'granted') {
+            if (calendarRequest.status === 'granted' && reminderRequest.status === 'granted') {
                 const calendarsFromCalendar = await Calendar.getCalendarsAsync();
                 calendar = Object.assign([], calendarsFromCalendar);
                 for (let i = 0; i < calendar.length; i++) {
