@@ -7,7 +7,8 @@ const config = {
     apiKey: "AIzaSyD-PDKxqvJnEMwr_QYNiORAreNraCAHuZM",
     authDomain: "purdue-contact-tracing.firebaseapp.com",
     databaseURL: "https://purdue-contact-tracing.firebaseio.com",
-    storageBucket: "purdue-contact-tracing.appspot.com"
+    storageBucket: "purdue-contact-tracing.appspot.com",
+    projectId: "purdue-contact-tracing"
 };
 
 class FirebaseInterface {
@@ -34,8 +35,20 @@ class FirebaseInterface {
         return firebase;
     }
 
-    static getDatabase() {
+    getRealTimeDatabase(): firebase.database.Database {
         return firebase.database();
+    }
+
+    getCollectionDatabase(): firebase.firestore.Firestore {
+        return firebase.firestore();
+    }
+
+    static getRealTimeDatabase() {
+        return FirebaseInterface.shared.getRealTimeDatabase();
+    }
+
+    static getCollectionDatabase(): firebase.firestore.Firestore {
+        return FirebaseInterface.shared.getCollectionDatabase();
     }
 
     static getCurrentUser() {

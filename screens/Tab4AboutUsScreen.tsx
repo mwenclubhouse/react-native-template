@@ -16,11 +16,7 @@ import FirebaseInterface from "../src/FirebaseInterface";
 import Bubble from "../components/Bubble";
 import firebase from "firebase";
 import FirebaseCredential from "../src/FirebaseCredential";
-
-interface MyCalendar {
-    title: string,
-    checked: boolean
-}
+import FirebaseUserConfig, {MyCalendar} from "../src/FirebaseUserConfig";
 
 interface MyAccounts {
     type: number,
@@ -89,13 +85,16 @@ export default class Tab4AboutUsScreen extends React.Component<any, any> {
             }
 
             // Load the Uid + Update State
-            FirebaseCredential.onLoggedIn((user: firebase.User | null) => {
+            FirebaseCredential.onLoggedIn(async (user: firebase.User | null) => {
                 // Set the Accounts
-                const account = Tab4AboutUsScreen.OnStateChange.AccountProviderChange(user);
+                const account = Tab4AboutUsScreen.AccountProviderChange(user);
+
+                // Set Calendars
+                const resultCalendars = await FirebaseUserConfig.getListCalendar(user, calendar);
 
                 // Update State
                 if (this.isMounted) {
-                    this.setState({calendar: calendar, login: account,isReady: true, loggedIn: user != null});
+                    this.setState({calendar: resultCalendars, login: account,isReady: true, loggedIn: user != null});
                 }
             });
 
@@ -105,27 +104,32 @@ export default class Tab4AboutUsScreen extends React.Component<any, any> {
         }
     }
 
-    static OnStateChange = class {
-        static AccountProviderChange(user: any) {
-            // Load the Accounts
-            let accounts: MyAccounts[] = Object.assign([], loginAvailable);
-            for (let i = 0; i < accounts.length; i++) {
-                accounts[i].used = false;
-                if (user != null) {
-                    for (let a of user.providerData) {
-                        accounts[i].used = accounts[i].used || (accounts[i].providerId == a?.providerId);
-                    }
+    static AccountProviderChange(user: any) {
+        // Load the Accounts
+        let accounts: MyAccounts[] = Object.assign([], loginAvailable);
+        for (let i = 0; i < accounts.length; i++) {
+            accounts[i].used = false;
+            if (user != null) {
+                for (let a of user.providerData) {
+                    accounts[i].used = accounts[i].used || (accounts[i].providerId == a?.providerId);
                 }
             }
-            return accounts;
         }
+        return accounts;
     }
 
     CalendarItem(calendar: any) {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    calendar["checked"] = !calendar["checked"];
+                    if (this.state.loggedIn) {
+                        calendar["checked"] = !calendar["checked"];
+                        FirebaseUserConfig.sendListCalendar(this.state.calendar);
+                    }
+                    else {
+                        calendar["checked"] = false;
+                        alert("You Have to Sign In to Get Notified About COVID19 Events at Purdue Based Off Your Schedule");
+                    }
                     this.setState({});
                 }}
                 style={{marginLeft: -5}}
@@ -181,7 +185,7 @@ export default class Tab4AboutUsScreen extends React.Component<any, any> {
                                 alert(error.toString());
                                 return;
                             }
-                            let accounts = Tab4AboutUsScreen.OnStateChange.AccountProviderChange(FirebaseInterface.user);
+                            let accounts = Tab4AboutUsScreen.AccountProviderChange(FirebaseInterface.user);
                             for (let a of accounts) {
                                 if (a.providerId == item.providerId) {
                                     a.used = true;
@@ -254,7 +258,6 @@ export default class Tab4AboutUsScreen extends React.Component<any, any> {
                 </View>
             );
         }
-        const scheme = this.getScheme();
         return (
             <KeyboardAvoidingView
                 style={styles.container}
@@ -307,9 +310,7 @@ export default class Tab4AboutUsScreen extends React.Component<any, any> {
                                 textAlign: "center",
                                 alignSelf: "center",
                                 justifyContent: "center"
-                            }}>
-                                Logout
-                            </Text>
+                            }}>Logout </Text>
                         </Bubble>
                     </TouchableOpacity>
                     }

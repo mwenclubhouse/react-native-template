@@ -1,18 +1,32 @@
 import * as firebase from "firebase";
+import "firebase/firestore"
 import * as GoogleSignIn from "expo-google-sign-in";
 import * as Facebook from "expo-facebook";
 import FirebaseInterface from "./FirebaseInterface";
 
+function isAsync(fn: any): boolean {
+    return fn.constructor.name === "AsyncFunction"
+}
+
 export default class FirebaseCredentials {
 
-    static onLoggedIn(handler: any) {
-        if (FirebaseInterface.user == null) {
-            FirebaseInterface.shared.getFirebase().auth().onAuthStateChanged((user: firebase.User | null) => {
-                FirebaseInterface.user = user;
-                handler(user)
-            });
+    private static runHandler(user: firebase.User | null, handler: any) {
+        if (isAsync(handler)) {
+            handler(user).then();
         } else {
-            handler(FirebaseInterface.user);
+            handler(user);
+        }
+    }
+
+    static onLoggedIn(handler: Function) {
+        if (FirebaseInterface.user == null) {
+            FirebaseInterface.shared.getFirebase().auth()
+                .onAuthStateChanged((user: firebase.User | null) => {
+                    FirebaseInterface.user = user;
+                    FirebaseCredentials.runHandler(user, handler);
+                });
+        } else {
+            FirebaseCredentials.runHandler(FirebaseInterface.user, handler);
         }
     }
 
@@ -47,8 +61,7 @@ export default class FirebaseCredentials {
             // Build Firebase credential with the Facebook access token.
             const credential = FirebaseInterface.shared.getFirebase().auth.FacebookAuthProvider.credential(result.token);
             await FirebaseCredentials.loginHandler(credential, handler);
-        }
-        else {
+        } else {
             let e: Error = new Error("Error: Cannot Login Into Facebook");
             handler(null, e);
         }
@@ -62,8 +75,7 @@ export default class FirebaseCredentials {
             }).then((result: firebase.auth.UserCredential) => {
                 handler(result, null);
             });
-        }
-        else {
+        } else {
             let containsProvider: boolean = false;
             for (let i of FirebaseInterface.shared.getCurrentUser().providerData) {
                 containsProvider = containsProvider || (i.providerId == credential.providerId);
@@ -73,22 +85,19 @@ export default class FirebaseCredentials {
                     if (linkResult.credential) {
                         firebase.auth().signInWithCredential(linkResult.credential)
                             .then((result: firebase.auth.UserCredential) => {
-                            handler(result, null);
-                        }).catch((error: any) => handler(null, error));
+                                handler(result, null);
+                            }).catch((error: any) => handler(null, error));
                     }
                 }).catch((error: any) => {
                     handler(null, error);
                 })
-            }
-            else {
+            } else {
                 let cleanerName = "";
                 if (credential.providerId == "password") {
                     cleanerName = "Email Account";
-                }
-                else if (credential.providerId == "google.com") {
+                } else if (credential.providerId == "google.com") {
                     cleanerName = "Google Account";
-                }
-                else if (credential.providerId == "facebook.com") {
+                } else if (credential.providerId == "facebook.com") {
                     cleanerName = "Facebook Account";
                 }
                 let e: Error = new Error("Cannot Link More Than 1 " + cleanerName + " to account");
