@@ -17,8 +17,8 @@ export default function App() {
   } else {
     return (
       <PaperProvider>
-        <Navigation colorScheme={colorScheme} />
         <StatusBar style={colorScheme === "light" ? "dark": "light"}/>
+        <Navigation colorScheme={colorScheme} />
       </PaperProvider>
     );
   }

@@ -29,9 +29,9 @@
       "bundleIdentifier": "com.matthewwen.purduect",
       "buildNumber": "1.0.2",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "config" :{
+      "config": {
         "googleSignIn": {
-          "reservedClientId" : "com.googleusercontent.apps.293001894166-6gahqhg5gvmn4959k8d2lo3ebpcn5o7r"
+          "reservedClientId": "com.googleusercontent.apps.293001894166-6gahqhg5gvmn4959k8d2lo3ebpcn5o7r"
         }
       }
     },
@@ -50,6 +50,7 @@
         }
       }
     },
-    "description": ""
+    "description": "",
+    "entryPoint": "node_modules/expo/AppEntry.js"
   }
 }

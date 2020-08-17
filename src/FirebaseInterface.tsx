@@ -1,7 +1,5 @@
 import * as firebase from 'firebase';
 import "firebase/auth";
-import * as Facebook from "expo-facebook";
-import * as GoogleSignIn from 'expo-google-sign-in';
 
 const config = {
     apiKey: "AIzaSyD-PDKxqvJnEMwr_QYNiORAreNraCAHuZM",

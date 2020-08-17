@@ -1,7 +1,7 @@
 import {NavigationContainer, DefaultTheme as NativeDefault, DarkTheme as NativeDark} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import * as React from 'react';
-import {ColorSchemeName, View} from 'react-native';
+import {ColorSchemeName, StatusBar, View} from 'react-native';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
 import {RootStackParamList} from '../types';
@@ -49,7 +49,9 @@ const Header = (props: any) => {
     }
     const theme = props.theme;
     return (
-        <Appbar.Header theme={{colors: {primary: theme.colors.primary}}}>
+        <Appbar.Header
+            statusBarHeight={StatusBar.currentHeight}
+            theme={{colors: {primary: theme.colors.primary}}}>
             {scene.route.name != "Root" &&
             <Appbar.BackAction
                 onPress={() => {
@@ -68,12 +70,16 @@ const Stack = createStackNavigator<RootStackParamList>();
 function RootNavigator(props: any) {
     return (
         <Stack.Navigator
-            headerMode={"screen"}
+            headerMode={undefined}
             screenOptions={{
                 header: ({scene, previous, navigation}) => (
                     <Header scene={scene} previous={previous} navigation={navigation} theme={props.theme}/>
                 )
-            }}>
+            }}
+            // screenOptions={{
+            //     headerShown: false
+            // }}
+        >
             <Stack.Screen name="Root" component={BottomTabNavigator}/>
             <Stack.Screen name="Login" component={LoginScreen} options={{headerTitle: "Enter Your Credentials"}}/>
             <Stack.Screen name="NotFound" component={NotFoundScreen} options={{title: 'Oops!'}}/>

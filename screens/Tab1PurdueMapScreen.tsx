@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {Dimensions, KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import {Dimensions, KeyboardAvoidingView, NativeModules, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 
 import {Text, View} from '../components/Themed';
-import FirebaseInterface from "../src/FirebaseInterface";
 import Bubble from "../components/Bubble";
 import useColorScheme from "../hooks/useColorScheme";
 import {TextInput} from "react-native-paper";
+import FirebaseCredential from "../src/FirebaseCredential";
 import firebase from "firebase";
 // import MapView from 'react-native-maps';
 
@@ -14,168 +14,39 @@ export default function PurdueMapScreen() {
     const [loggedIn, setState] = React.useState(false);
     const [temp, setTemp] = React.useState("");
 
-    // FirebaseInterface.onLoggedIn((user: firebase.User | null) => {
-    //     setState(user != null);
-    // });
+    const {ToastModule, BluetoothModule} = NativeModules;
+
+    function _showToast() {
+        if (BluetoothModule == null) {
+            ToastModule.showToast("There is no bluetooth module found")
+        }
+        else {
+            FirebaseCredential.onLoggedIn((user: firebase.User | null) => {
+                if (user != null) {
+                    BluetoothModule.bindManger();
+                }
+            });
+        }
+    }
+
+    FirebaseCredential.onLoggedIn(async (user: firebase.User | null) => {
+        setState(user != null);
+    });
 
     return (
         <KeyboardAvoidingView enabled behavior={undefined} style={{flex: 1}}
         >
         <ScrollView>
             <Text style={styles.title}>Purdue University</Text>
-            <Bubble
-                scheme={useColorScheme()}>
-                <Text style={{fontSize: 20}}>
-                    {loggedIn &&
-                    "You Are Logged In"
-                    }
-                    {!loggedIn &&
-                    "You Are Not Logged In"
-                    }
-                </Text>
-                <TextInput
-                    label={"Test Keyboard"}
-                    value={temp}
-                    onChangeText={(v: string) => setTemp(v)}
-                    style={styles.textInputStyle}
-                />
-            </Bubble>
-            <Bubble
-                scheme={useColorScheme()}>
-                <Text style={{fontSize: 20}}>
-                    {loggedIn &&
-                    "You Are Logged In"
-                    }
-                    {!loggedIn &&
-                    "You Are Not Logged In"
-                    }
-                </Text>
-                <TextInput
-                    label={"Test Keyboard"}
-                    value={temp}
-                    onChangeText={(v: string) => setTemp(v)}
-                    style={styles.textInputStyle}
-                />
-            </Bubble>
-            <Bubble
-                scheme={useColorScheme()}>
-                <Text style={{fontSize: 20}}>
-                    {loggedIn &&
-                    "You Are Logged In"
-                    }
-                    {!loggedIn &&
-                    "You Are Not Logged In"
-                    }
-                </Text>
-                <TextInput
-                    label={"Test Keyboard"}
-                    value={temp}
-                    onChangeText={(v: string) => setTemp(v)}
-                    style={styles.textInputStyle}
-                />
-            </Bubble>
-            <Bubble
-                scheme={useColorScheme()}>
-                <Text style={{fontSize: 20}}>
-                    {loggedIn &&
-                    "You Are Logged In"
-                    }
-                    {!loggedIn &&
-                    "You Are Not Logged In"
-                    }
-                </Text>
-                <TextInput
-                    label={"Test Keyboard"}
-                    value={temp}
-                    onChangeText={(v: string) => setTemp(v)}
-                    style={styles.textInputStyle}
-                />
-            </Bubble>
-            <Bubble
-                scheme={useColorScheme()}>
-                <Text style={{fontSize: 20}}>
-                    {loggedIn &&
-                    "You Are Logged In"
-                    }
-                    {!loggedIn &&
-                    "You Are Not Logged In"
-                    }
-                </Text>
-                <TextInput
-                    label={"Test Keyboard"}
-                    value={temp}
-                    onChangeText={(v: string) => setTemp(v)}
-                    style={styles.textInputStyle}
-                />
-            </Bubble>
-            <Bubble
-                scheme={useColorScheme()}>
-                <Text style={{fontSize: 20}}>
-                    {loggedIn &&
-                    "You Are Logged In"
-                    }
-                    {!loggedIn &&
-                    "You Are Not Logged In"
-                    }
-                </Text>
-                <TextInput
-                    label={"Test Keyboard"}
-                    value={temp}
-                    onChangeText={(v: string) => setTemp(v)}
-                    style={styles.textInputStyle}
-                />
-            </Bubble>
-            <Bubble
-                scheme={useColorScheme()}>
-                <Text style={{fontSize: 20}}>
-                    {loggedIn &&
-                    "You Are Logged In"
-                    }
-                    {!loggedIn &&
-                    "You Are Not Logged In"
-                    }
-                </Text>
-                <TextInput
-                    label={"Test Keyboard"}
-                    value={temp}
-                    onChangeText={(v: string) => setTemp(v)}
-                    style={styles.textInputStyle}
-                />
-            </Bubble>
-            <Bubble
-                scheme={useColorScheme()}>
-                <Text style={{fontSize: 20}}>
-                    {loggedIn &&
-                    "You Are Logged In"
-                    }
-                    {!loggedIn &&
-                    "You Are Not Logged In"
-                    }
-                </Text>
-                <TextInput
-                    label={"Test Keyboard"}
-                    value={temp}
-                    onChangeText={(v: string) => setTemp(v)}
-                    style={styles.textInputStyle}
-                />
-            </Bubble>
-            <Bubble
-                scheme={useColorScheme()}>
-                <Text style={{fontSize: 20}}>
-                    {loggedIn &&
-                    "You Are Logged In"
-                    }
-                    {!loggedIn &&
-                    "You Are Not Logged In"
-                    }
-                </Text>
-                <TextInput
-                    label={"Test Keyboard"}
-                    value={temp}
-                    onChangeText={(v: string) => setTemp(v)}
-                    style={styles.textInputStyle}
-                />
-            </Bubble>
+            <TouchableOpacity
+                onPress={() => {
+                    _showToast();
+                }}>
+                <Bubble
+                    scheme={useColorScheme()}>
+                    <Text style={styles.title}>Tap Me for Toast Message</Text>
+                </Bubble>
+            </TouchableOpacity>
             {/*<MapView style={styles.mapStyle}/>*/}
         </ScrollView>
         </KeyboardAvoidingView>
