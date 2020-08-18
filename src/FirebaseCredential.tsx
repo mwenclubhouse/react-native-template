@@ -1,6 +1,6 @@
 import * as firebase from "firebase";
 import "firebase/firestore"
-import * as GoogleSignIn from "expo-google-sign-in";
+import {GoogleSignin, GoogleSigninButton, statusCodes} from 'react-native-google-signin';
 import * as Facebook from "expo-facebook";
 import FirebaseInterface from "./FirebaseInterface";
 
@@ -32,26 +32,17 @@ export default class FirebaseCredentials {
 
     static async loginWithGoogle(handler: any) {
         try {
-            await GoogleSignIn.initAsync();
-            await GoogleSignIn.askForPlayServicesAsync();
-            const result = await GoogleSignIn.signInAsync();
-            if (result.type === 'success') {
-                alert("Successfully Connected Google Account: " + result.user?.email);
-                const credentials = FirebaseInterface.shared.getFirebase().auth.GoogleAuthProvider.credential(result.user?.auth?.idToken);
-                await FirebaseCredentials.loginHandler(credentials, handler);
-            } else {
-                let e: Error = new Error("Login: Cannot Login with Google");
-                handler(null, e);
-            }
+            await GoogleSignin.hasPlayServices();
+            const response = await GoogleSignin.signIn();
+            const credential = FirebaseInterface.shared.getFirebase().auth.GoogleAuthProvider.credential(response.idToken)
+            await FirebaseCredentials.loginHandler(credential, handler)
         } catch (e) {
             handler(null, e);
         }
     }
 
     static async loginWithFacebook(handler: any) {
-        await Facebook.initializeAsync(
-            '308701397014423',
-        );
+        await Facebook.initializeAsync('308701397014423');
 
         const result = await Facebook.logInWithReadPermissionsAsync(
             {permissions: ['public_profile', 'email']}

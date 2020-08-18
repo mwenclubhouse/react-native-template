@@ -1,5 +1,6 @@
 import * as firebase from 'firebase';
 import "firebase/auth";
+import {GoogleSignin} from "react-native-google-signin/index";
 
 const config = {
     apiKey: "AIzaSyD-PDKxqvJnEMwr_QYNiORAreNraCAHuZM",
@@ -14,15 +15,15 @@ class FirebaseInterface {
     static shared: FirebaseInterface;
     static user: firebase.User | null;
 
-    googleProvider: any;
-    facebookProvider: any;
-
     constructor() {
         if (!firebase.apps.length) {
             firebase.initializeApp(config);
         }
-        this.googleProvider = new firebase.auth.GoogleAuthProvider();
-        this.facebookProvider = new firebase.auth.FacebookAuthProvider();
+        GoogleSignin.configure({
+            scopes: ['email'],
+            webClientId: "293001894166-fi4ip6jqdgcnfacef6nn8f7ku3ml4cp1.apps.googleusercontent.com",
+            offlineAccess: true
+        });
     }
 
     getCurrentUser(): any {

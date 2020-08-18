@@ -27,6 +27,9 @@ public class BluetoothModule extends ReactContextBaseJavaModule implements Beaco
 
     private BeaconManager manager;
     private String userUid;
+    Beacon beacon;
+    BeaconParser beaconParser;
+    BeaconTransmitter beaconTransmitter;
 
     public BluetoothModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -51,7 +54,7 @@ public class BluetoothModule extends ReactContextBaseJavaModule implements Beaco
     @ReactMethod
     public void bindManager(String userUid) {
         this.userUid = userUid;
-        Beacon beacon = new Beacon.Builder()
+        beacon = new Beacon.Builder()
                 .setId1("2f234454-cf6d-4a0f-adf2-f4911ba9ffa6")
                 .setId2("1")
                 .setId3("2")
@@ -59,9 +62,8 @@ public class BluetoothModule extends ReactContextBaseJavaModule implements Beaco
                 .setTxPower(-59)
                 .build();
         Toast.makeText(getReactApplicationContext(), "Hello There Beacon", Toast.LENGTH_SHORT).show();
-        BeaconParser beaconParser = new BeaconParser()
-                .setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24");
-        BeaconTransmitter beaconTransmitter = new BeaconTransmitter(getApplicationContext(), beaconParser);
+        beaconParser = new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24");
+        beaconTransmitter = new BeaconTransmitter(getApplicationContext(), beaconParser);
         beaconTransmitter.startAdvertising(beacon);
     }
 
